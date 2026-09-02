@@ -1,0 +1,99 @@
+﻿@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens — Deep Forest Green & Warm Champagne Cream
+--------------------------------------------------------------------------- */
+@theme {
+  --color-forest: #405842;
+  --color-forest-mid: #4b644d;
+  --color-forest-deep: #374b39;
+  --color-forest-ink: #2b3d2d;
+
+  --color-cream: #f3d9b3;
+  --color-cream-pale: #f6e4c6;
+  --color-cream-mist: #faf0dd;
+
+  --font-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-soft: 0 24px 60px -24px rgb(43 61 45 / 0.35);
+  --shadow-lift: 0 12px 30px -12px rgb(43 61 45 / 0.4);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  @apply bg-cream font-sans text-forest-ink antialiased;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  overflow-x: hidden;
+}
+
+/* Tasteful, restrained scrollbar in the wedding palette */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f3d9b3;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(64 88 66 / 0.3);
+  border: 3px solid #f3d9b3;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(64 88 66 / 0.5);
+}
+
+::selection {
+  background-color: #405842;
+  color: #f3d9b3;
+}
+
+:focus-visible {
+  outline: 2px solid #405842;
+  outline-offset: 3px;
+}
+
+/* Lighter outline on dark (forest) surfaces */
+.on-forest :focus-visible {
+  outline-color: #f3d9b3;
+}
+
+/* ---------------------------------------------------------------------------
+   Split-flap countdown helpers
+--------------------------------------------------------------------------- */
+.flip-scene {
+  perspective: 700px;
+}
+
+.flip-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ---------------------------------------------------------------------------
+   Accessibility — honour prefers-reduced-motion for CSS-driven motion.
+   (Framer Motion animations are additionally softened in JS
+   via useReducedMotion checks inside the components.)
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
