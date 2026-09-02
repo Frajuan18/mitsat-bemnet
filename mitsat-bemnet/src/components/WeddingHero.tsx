@@ -14,7 +14,7 @@ const slides = [
 const AUTOPLAY_MS = 6000
 const TRANSITION_MS = 1000
 
-const s = (delay: number, reduced: boolean, entered: boolean) => ({
+const s = (delay: number, reduced: boolean | null, entered: boolean) => ({
   initial: reduced ? false : { opacity: 0, y: 20 },
   animate: entered ? { opacity: 1, y: 0 } : {},
   transition: { duration: 0.8, delay, ease: [0.33, 0, 0.15, 1] as const },
