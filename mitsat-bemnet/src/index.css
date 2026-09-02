@@ -30,7 +30,7 @@ body {
   @apply bg-cream font-sans text-forest-ink antialiased;
   font-weight: 400;
   letter-spacing: 0.01em;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Tasteful, restrained scrollbar in the wedding palette */
@@ -77,6 +77,19 @@ body {
 .flip-face {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+}
+
+/* ---------------------------------------------------------------------------
+   Keyframe animations
+--------------------------------------------------------------------------- */
+@keyframes hint {
+  0%, 100% { transform: scaleY(0.25); opacity: 0.4; }
+  50%      { transform: scaleY(1);    opacity: 0.9; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
 }
 
 /* ---------------------------------------------------------------------------

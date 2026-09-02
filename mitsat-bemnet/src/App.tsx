@@ -1,68 +1,50 @@
-﻿import { useEffect, useRef, useState } from 'react'
-import { AnimatePresence } from 'framer-motion'
-import Envelope from './components/Envelope'
+﻿import { useState } from 'react'
 import WeddingHero from './components/WeddingHero'
 import Countdown from './components/Countdown'
 import VenueSection from './components/VenueSection'
 import WeddingMessage from './components/WeddingMessage'
-import PhotoGallery from './components/PhotoGallery'
 import WishesForm from './components/WishesForm'
 import Footer from './components/Footer'
+import ScrollProgress from './components/ScrollProgress'
 
 function App() {
-  const [opened, setOpened] = useState(false)
-  const [showEnvelope, setShowEnvelope] = useState(true)
-  // Only re-seal once the visitor has genuinely scrolled away and back.
-  const hasScrolledDown = useRef(false)
-
-  // Keep the page from scrolling while the envelope is in front of it.
-  useEffect(() => {
-    document.body.style.overflow = showEnvelope ? 'hidden' : ''
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [showEnvelope])
-
-  // Once the invitation is open, scrolling all the way back up returns the
-  // card to its (re-sealed) envelope.
-  useEffect(() => {
-    if (!opened) return
-    const onScroll = () => {
-      if (window.scrollY > 150) hasScrolledDown.current = true
-      if (hasScrolledDown.current && window.scrollY <= 8 && !showEnvelope) {
-        hasScrolledDown.current = false
-        setShowEnvelope(true)
-      }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [opened, showEnvelope])
-
-  const handleOpened = () => {
-    setOpened(true)
-    setShowEnvelope(false)
-    hasScrolledDown.current = false
-  }
+  const [lang, setLang] = useState<'en' | 'am'>('en')
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-cream">
-      <AnimatePresence>
-        {showEnvelope && (
-          <Envelope key="envelope" isReturn={opened} onOpened={handleOpened} />
-        )}
-      </AnimatePresence>
+      {/* language selector */}
+      <div className="fixed top-4 right-4 z-50 flex rounded-md border border-forest/20 bg-cream/90 backdrop-blur-sm shadow-sm">
+        <button
+          onClick={() => setLang('en')}
+          className={`px-3 py-1.5 font-sans text-[10px] uppercase tracking-[0.2em] transition-colors ${
+            lang === 'en'
+              ? 'bg-forest text-cream'
+              : 'text-forest/60 hover:text-forest'
+          }`}
+        >
+          EN
+        </button>
+        <button
+          onClick={() => setLang('am')}
+          className={`px-3 py-1.5 font-sans text-[10px] uppercase tracking-[0.2em] transition-colors ${
+            lang === 'am'
+              ? 'bg-forest text-cream'
+              : 'text-forest/60 hover:text-forest'
+          }`}
+        >
+          አማ
+        </button>
+      </div>
 
-      {opened && (
-        <main>
-          <WeddingHero />
-          <Countdown />
-          <VenueSection />
-          <WeddingMessage />
-          <PhotoGallery />
-          <WishesForm />
-          <Footer />
-        </main>
-      )}
+      <ScrollProgress />
+      <main>
+        <WeddingHero lang={lang} />
+        <Countdown lang={lang} />
+        <VenueSection />
+        <WeddingMessage />
+        <WishesForm />
+        <Footer />
+      </main>
     </div>
   )
 }
