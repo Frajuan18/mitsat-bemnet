@@ -4,6 +4,7 @@ import Hero from './components/Hero'
 import Countdown from './components/Countdown'
 import EthiopianCalendar from './components/EthiopianCalendar'
 import EventDetails from './components/EventDetails'
+import Gallery from './components/Gallery'
 import WishesForm from './components/WishesForm'
 import Footer from './components/Footer'
 import ScrollProgress from './components/ScrollProgress'
@@ -19,6 +20,7 @@ function App() {
           <Countdown />
           <EthiopianCalendar />
           <EventDetails />
+          <Gallery />
           <WishesForm />
           <Footer />
         </main>

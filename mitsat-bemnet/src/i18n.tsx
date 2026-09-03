@@ -16,20 +16,30 @@ export type Lang = 'en' | 'am'
 --------------------------------------------------------------------------- */
 
 const en = {
-  names: { first: 'Mitsat', second: 'Bemnet' },
+  names: { first: 'Bemnu', second: 'Mitsi' },
+  verse: {
+    ref: 'Psalm 119:65',
+    text: '“O Lord, you have dealt well with your servant, according to your word.”',
+  },
   hero: {
     eyebrow: 'The Wedding Of',
+    celebrating: 'We are celebrating our wedding on',
     date: 'September 20, 2026',
     dateEth: 'Meskerem 10, 2019 E.C.',
     location: 'Addis Ababa, Ethiopia',
+    time: '9:00 LT',
     scroll: 'Scroll',
     slideOf: 'of',
     openPhoto: 'Open photograph',
     prevPhoto: 'Previous photo',
     nextPhoto: 'Next photo',
   },
-  categories: ['Ceremony', 'Our Story', 'The Journey', 'Moments', 'Reception'],
-  locations: ['Addis Ababa', 'Ethiopia', 'Home', 'Forever', 'Ketena 2'],
+  categories: ['Ceremony', 'Our Story', 'The Journey', 'Moments', 'Reception', 'Forever'],
+  locations: ['Addis Ababa', 'Ethiopia', 'Home', 'Forever', 'Ketena 2', 'Ethiopia'],
+  gallery: {
+    eyebrow: 'Captured Moments',
+    title: 'Our Gallery',
+  },
   countdown: {
     eyebrow: 'Counting Down To',
     date: 'September 20, 2026',
@@ -52,6 +62,8 @@ const en = {
   events: {
     eyebrow: 'Together With Our Families',
     lead: 'We joyfully invite you to celebrate our wedding',
+    invitation:
+      'Together with our families, we respectfully invite you to the wedding ceremony of our children Bemnu & Mitsi. The ceremony will be held on Sunday, Meskerem 10, 2019 E.C., at 9:00 local time at Ketena 2 Full Gospel Believer Church, in the Covenant Order. We would be honoured to have you with us.',
     date: 'September 20, 2026',
     dateEth: 'Meskerem 10, 2019 E.C.',
     venue1: 'Ketena 2 Full Gospel',
@@ -61,7 +73,7 @@ const en = {
   wishes: {
     eyebrow: 'Guest Wishes',
     title: 'Leave Your Wishes',
-    desc: 'Share a blessing, message, or wish with us as we celebrate this special day.',
+    desc: 'Leave us your good wishes, messages, and blessings in the space below.',
     nameLabel: 'Your Name',
     namePlaceholder: 'Enter your name',
     wishLabel: 'Your Wish',
@@ -74,6 +86,7 @@ const en = {
     thanks: 'Thank You',
     thanksBody: 'Your wish has been received with love.',
     again: 'Send another wish',
+    mapButton: 'Open in Google Maps',
   },
   footer: {
     withLove: 'With Love',
@@ -82,24 +95,34 @@ const en = {
 }
 
 const am: typeof en = {
-  names: { first: 'ምፅአት', second: 'በእምነት' },
+  names: { first: 'በእምኑ', second: 'ምፂ' },
+  verse: {
+    ref: 'መዝሙረ ዳዊት ፻፲፱፥ ፷፭',
+    text: '«አቤቱ፥ እንደ ቃልህ ለባሪያህ መልካም አደረግህ።»',
+  },
   hero: {
     eyebrow: 'የጋብቻ በዓል',
+    celebrating: 'የጋብቻችንን በዓል እንከብራለን',
     date: 'መስከረም ፲፣ ፳፻፲፱ ዓ.ም.',
     dateEth: 'መስከረም ፲',
     location: 'አዲስ አበባ፣ ኢትዮጵያ',
+    time: 'ከቀኑ ፱ ሰዓት',
     scroll: 'ወደ ታች',
     slideOf: 'ከ',
     openPhoto: 'ፎቶግራፉን ክፈት',
     prevPhoto: 'ያለፈው ፎቶ',
     nextPhoto: 'ቀጣይ ፎቶ',
   },
-  categories: ['ሥነ ሥርዓት', 'ታሪካችን', 'ጉዞያችን', 'ገጽታዎች', 'ድግስ'],
-  locations: ['አዲስ አበባ', 'ኢትዮጵያ', 'ቤት', 'ለዘላለም', 'ቀጠና 2'],
+  categories: ['ሥነ ሥርዓት', 'ታሪካችን', 'ጉዞያችን', 'ገጽታዎች', 'ድግስ', 'ለዘላለም'],
+  locations: ['አዲስ አበባ', 'ኢትዮጵያ', 'ቤት', 'ለዘላለም', 'ቀጠና 2', 'ኢትዮጵያ'],
+  gallery: {
+    eyebrow: 'የተያዙ አፍታዎች',
+    title: 'የፎቶ ማሳያ',
+  },
   countdown: {
     eyebrow: 'ወደ ጋብቻችን የቀረው ጊዜ',
-    date: 'መስከረም ፲፣ ፳፻፲፱ ዓ.ም.',
-    dateSub: 'መስከረም ፲',
+    date: 'መስከረም 10፣ 2019 ዓ.ም.',
+    dateSub: 'መስከረም 10',
     days: 'ቀን',
     hours: 'ሰዓት',
     minutes: 'ደቂቃ',
@@ -118,6 +141,8 @@ const am: typeof en = {
   events: {
     eyebrow: 'ከቤተሰባችን ጋር',
     lead: 'ለጋብቻችን እንዲያከብሩን በሙሉ እንጋብዛለን',
+    invitation:
+      'ለ ክቡር እንግዳችን የማክበር ሰላምታችንን እያቀረብን የልጆቻችን በእምነት አሰፋ እና ምጽአት ሺሰማ የጋብቻ ስነ ሥርዓት የሚከናወነው እሁድ መስከረም ፲ ቀን ፳፻፲፱ ዓ.ም. ሲሆን ከቀኑ በ፱ ሰዓት በቀጠና ሁለት ሙሉ ወንጌል ቤተ ክርስቲያን በሚኖረው የቃል ኪዳን ሥርዓት ከ__________ ጋር እንዲገኙልን በአክብሮት ጠርተንዎታል።',
     date: 'መስከረም ፲፣ ፳፻፲፱ ዓ.ም.',
     dateEth: 'መስከረም ፲',
     venue1: 'ቀጠና 2 ሙሉ ወንጌል',
@@ -126,8 +151,8 @@ const am: typeof en = {
   },
   wishes: {
     eyebrow: 'የእንግዶች ምኞት',
-    title: 'ምኞትዎን ይተዉልን',
-    desc: 'በዚህ ልዩ ቀን ስንከብር በረከትዎን፣ መልእክትዎን ወይም ምኞትዎን ያጋሩን።',
+    title: 'ምኞቶን ያስቀምጡ',
+    desc: 'በታች ባለው ክፍት ቦታ መልካም ምኞቶን፣ መልእክቶን እንዲሁም ምርቃቶን ያስቀምጡልን።',
     nameLabel: 'ስምዎ',
     namePlaceholder: 'ስምዎን ያስገቡ',
     wishLabel: 'ምኞትዎ',
@@ -140,6 +165,7 @@ const am: typeof en = {
     thanks: 'እጅግ አመሰግናለን',
     thanksBody: 'ምኞትዎ በፍቅር ተቀብለናል።',
     again: 'ሌላ ምኞት ላክ',
+    mapButton: 'Google Maps ይክፈቱ',
   },
   footer: {
     withLove: 'በፍቅር',

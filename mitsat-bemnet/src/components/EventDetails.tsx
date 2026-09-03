@@ -26,11 +26,24 @@ export default function EventDetails() {
         ))}
 
         <Reveal>
-          <p className="label text-forest/75">{t.events.eyebrow}</p>
+          <figure className="mx-auto max-w-xl text-center">
+            <blockquote className="display-3 font-light italic text-forest/90">
+              {t.verse.text}
+            </blockquote>
+            <figcaption className="label mt-4 text-taupe">{t.verse.ref}</figcaption>
+          </figure>
         </Reveal>
 
         <Reveal delay={0.1}>
-          <p className="body-copy mx-auto mt-5 max-w-md text-forest/85">{t.events.lead}</p>
+          <Ornament className="mt-8" />
+        </Reveal>
+
+        <Reveal delay={0.15}>
+          <p className="label mt-8 text-forest/75">{t.events.eyebrow}</p>
+        </Reveal>
+
+        <Reveal delay={0.2}>
+          <p className="body-copy mx-auto mt-5 max-w-2xl text-forest/85">{t.events.invitation}</p>
         </Reveal>
 
         <Reveal delay={0.2}>

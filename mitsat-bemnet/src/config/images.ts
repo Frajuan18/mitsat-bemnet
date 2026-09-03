@@ -28,10 +28,10 @@ export const photos: Photo[] = [
   { src: photo3, alt: 'Mitsat and Bemnet together, portrait photograph three', focal: '36%' },
   { src: photo4, alt: 'Mitsat and Bemnet together, portrait photograph four', focal: '42%' },
   { src: photo5, alt: 'Mitsat and Bemnet together, landscape photograph', focal: '50%' },
-  { src: photo6, alt: 'Mitsat and Bemnet together, portrait photograph five', focal: '44%' },
+  { src: photo6, alt: 'Mitsat and Bemnet together, portrait photograph five', focal: '20%' },
 ]
 
 /**
  * Hero slideshow order — a curated sequence of `photos` indices.
  */
-export const heroSlides: number[] = [0, 1, 4, 2, 3]
+export const heroSlides: number[] = [0, 1, 4, 2, 3, 5]

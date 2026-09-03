@@ -7,6 +7,9 @@ import Reveal from './Reveal'
 /** API base — relative in dev (Vite proxies /api to the backend) */
 const API_BASE = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
 
+/** Church location on Google Maps */
+const MAPS_URL = 'https://maps.app.goo.gl/zbhApgUviwYWTE2MA?g_st=ac'
+
 type Status = 'idle' | 'submitting' | 'error'
 
 /**
@@ -186,12 +189,35 @@ export default function WishesForm() {
                     transition={{ duration: 0.9, repeat: Infinity, ease: 'linear' }}
                     aria-hidden="true"
                   />
-                  <span className="label !tracking-[0.3em]">{t.wishes.sending}</span>
+                  <span className="label">{t.wishes.sending}</span>
                 </>
               ) : (
-                <span className="label !tracking-[0.3em]">{t.wishes.submit}</span>
+                <span className="label">{t.wishes.submit}</span>
               )}
             </motion.button>
+
+            <motion.a
+              href={MAPS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 flex w-full items-center justify-center gap-3 border border-forest/40 bg-transparent px-6 py-4 text-forest transition-colors hover:bg-forest hover:text-cream"
+              whileHover={reduceMotion ? undefined : { y: -2 }}
+              whileTap={reduceMotion ? undefined : { scale: 0.99 }}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.2"
+                aria-hidden="true"
+              >
+                <path d="M7 13C7 13 11.5 8.9 11.5 5.5C11.5 3 9.5 1 7 1C4.5 1 2.5 3 2.5 5.5C2.5 8.9 7 13 7 13Z" />
+                <circle cx="7" cy="5.5" r="1.6" />
+              </svg>
+              <span className="label">{t.wishes.mapButton}</span>
+            </motion.a>
           </form>
         </Reveal>
       </div>

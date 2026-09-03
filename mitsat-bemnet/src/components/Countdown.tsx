@@ -1,5 +1,4 @@
 ﻿import { useEffect, useState } from 'react'
-import { useReducedMotion } from 'framer-motion'
 import { useLang } from '../i18n'
 import Ornament from './Ornament'
 import Reveal from './Reveal'
@@ -26,7 +25,7 @@ export default function Countdown() {
   const totalSeconds = Math.max(0, Math.floor((WEDDING_DATE - now) / 1000))
 
   return (
-    <section id="countdown" className="px-5 pb-12 pt-4 sm:pb-14">
+    <section id="countdown" className="px-5 pb-24 pt-4 sm:pb-36 sm:pt-5">
       <div className="mx-auto max-w-4xl text-center">
         <Reveal>
           <p className="label text-forest/75">{reached ? t.countdown.passed : t.countdown.eyebrow}</p>
@@ -64,7 +63,6 @@ const digitClass =
   'flip-digit font-body text-[1.75rem] font-medium tracking-tight sm:text-[2.5rem] lg:text-[3.25rem]'
 
 function FlipCard({ value, label }: { value: string; label: string }) {
-  const reduced = useReducedMotion()
   const [display, setDisplay] = useState<FlipState>({ value, previous: null })
   const [propValue, setPropValue] = useState(value)
 
@@ -118,8 +116,10 @@ function FlipCard({ value, label }: { value: string; label: string }) {
           <span className="absolute left-1 top-1/2 z-30 h-3 w-1.5 -translate-y-1/2 bg-forest-ink/80" aria-hidden="true" />
           <span className="absolute right-1 top-1/2 z-30 h-3 w-1.5 -translate-y-1/2 bg-forest-ink/80" aria-hidden="true" />
 
-          {/* animated flaps — mounted only while flipping */}
-          {!reduced && flipping && (
+          {/* animated flaps — mounted for every flip; the split-flap motion is
+              the countdown's core concept, so it plays even under
+              prefers-reduced-motion (CSS below keeps it accessible) */}
+          {flipping && (
             <>
               <div className="flip-flap upper" aria-hidden="true">
                 <span className={digitClass}>{display.previous}</span>

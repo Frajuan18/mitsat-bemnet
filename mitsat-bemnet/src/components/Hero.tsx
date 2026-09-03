@@ -4,7 +4,7 @@ import { photos, heroSlides } from '../config/images'
 import { useLang } from '../i18n'
 import Ornament from './Ornament'
 
-const AUTOPLAY_MS = 6000
+const AUTOPLAY_MS = 3000
 const TRANSITION_MS = 1100
 
 interface Slide {
@@ -29,9 +29,7 @@ export default function Hero() {
   const reduced = useReducedMotion()
   const [active, setActive] = useState(0)
   const [entered, setEntered] = useState(false)
-  const [paused, setPaused] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const interactedRef = useRef(false)
   const containerRef = useRef<HTMLElement>(null)
 
   /* Crossfade layers — A sits beneath until B fades in over it, then swap. */
@@ -86,20 +84,19 @@ export default function Hero() {
     [active, crossfadeTo],
   )
 
-  /* Autoplay — paused on hover/touch, never fighting a manual interaction */
+  /* Autoplay — always advances every AUTOPLAY_MS. Picking a thumbnail or an
+     arrow selects that slide immediately and the active change restarts the
+     timer, so the slideshow keeps rotating every 3 seconds even right after
+     a manual selection. */
   useEffect(() => {
-    if (reduced || paused) return
+    if (reduced) return
     timerRef.current = setTimeout(() => {
-      if (!interactedRef.current) {
-        crossfadeTo((active + 1) % slides.length)
-      } else {
-        interactedRef.current = false
-      }
+      crossfadeTo((active + 1) % slides.length)
     }, AUTOPLAY_MS)
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
     }
-  }, [active, paused, reduced, crossfadeTo])
+  }, [active, reduced, crossfadeTo])
 
   /* Arrow keys drive the hero slideshow */
   useEffect(() => {
@@ -122,16 +119,6 @@ export default function Hero() {
       ref={containerRef}
       className="relative h-[118vh]"
       aria-label={isAm ? 'የጋብቻ መክፈቻ' : 'Wedding hero'}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => {
-        interactedRef.current = true
-        setPaused(false)
-      }}
-      onTouchStart={() => setPaused(true)}
-      onTouchEnd={() => {
-        interactedRef.current = true
-        setPaused(false)
-      }}
     >
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-forest-ink">
         {/* ─── PHOTOGRAPH ─────────────────────────────────────────── */}
@@ -256,7 +243,10 @@ export default function Hero() {
         </motion.div>
 
         {/* ─── SLIDE NAVIGATION (lower-right) ─────────────────────── */}
-        <motion.div className="absolute bottom-24 right-6 z-20 sm:bottom-28 sm:right-10 md:right-14" {...enter(1.4)}>
+        <motion.div
+          className="absolute bottom-24 right-6 z-20 sm:bottom-28 sm:right-10 md:right-14"
+          {...enter(1.4)}
+        >
           <div className="flex items-end gap-2 sm:gap-3">
             {slides.map((sl, i) => {
               const isActive = i === active
