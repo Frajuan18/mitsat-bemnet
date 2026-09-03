@@ -64,8 +64,12 @@ export default async function handler(req, res) {
     await connectToDatabase()
   } catch (err) {
     console.error('MongoDB connection error:', err.message)
+    const detail = err.message?.includes('MONGODB_URI is not set')
+      ? 'MONGODB_URI environment variable is not configured for this deployment.'
+      : `Could not connect to MongoDB: ${err.message}`
     return res.status(503).json({
       error: 'We\u2019re getting everything ready \u2014 please try your wish again in a moment.',
+      detail,
     })
   }
 
