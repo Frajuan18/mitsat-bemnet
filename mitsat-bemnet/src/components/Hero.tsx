@@ -16,13 +16,38 @@ interface Slide {
 
 const slides: Slide[] = heroSlides.map((imageIndex) => {
   const photo = photos[imageIndex]
-
-  return {
-    image: photo.src,
-    alt: photo.alt,
-    focal: photo.focal,
-  }
+  return { image: photo.src, alt: photo.alt, focal: photo.focal }
 })
+
+interface PhotoLayerProps {
+  slide: Slide
+  visible: boolean
+  transition: string
+  eager?: boolean
+}
+
+function PhotoLayer({ slide, visible, transition, eager = false }: PhotoLayerProps) {
+  return (
+    <div
+      className="absolute inset-0"
+      style={{
+        opacity: visible ? 1 : 0,
+        transition,
+        willChange: 'opacity',
+      }}
+    >
+      <img
+        src={slide.image}
+        alt={slide.alt}
+        className="h-full w-full object-cover"
+        style={{ objectPosition: `center ${slide.focal}` }}
+        draggable={false}
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+      />
+    </div>
+  )
+}
 
 export default function Hero() {
   const { t, isAm } = useLang()
@@ -52,7 +77,6 @@ export default function Hero() {
 
   useEffect(() => {
     const id = window.setTimeout(() => setEntered(true), 80)
-
     return () => window.clearTimeout(id)
   }, [])
 
@@ -75,7 +99,6 @@ export default function Hero() {
         setLayerA(target)
 
         requestAnimationFrame(() => {
-          setLayerA(target)
           setAVisible(true)
           setBVisible(false)
         })
@@ -88,13 +111,15 @@ export default function Hero() {
     [active],
   )
 
-  const nextSlide = useCallback(() => {
-    crossfadeTo((active + 1) % slides.length)
-  }, [active, crossfadeTo])
+  const nextSlide = useCallback(
+    () => crossfadeTo((active + 1) % slides.length),
+    [active, crossfadeTo],
+  )
 
-  const prevSlide = useCallback(() => {
-    crossfadeTo((active - 1 + slides.length) % slides.length)
-  }, [active, crossfadeTo])
+  const prevSlide = useCallback(
+    () => crossfadeTo((active - 1 + slides.length) % slides.length),
+    [active, crossfadeTo],
+  )
 
   useEffect(() => {
     if (reduced || slides.length < 2) return
@@ -115,7 +140,6 @@ export default function Hero() {
     }
 
     window.addEventListener('keydown', onKeyDown)
-
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [nextSlide, prevSlide])
 
@@ -130,7 +154,6 @@ export default function Hero() {
     pointerStartX.current = null
 
     if (Math.abs(distance) < SWIPE_THRESHOLD) return
-
     if (distance < 0) nextSlide()
     else prevSlide()
   }
@@ -155,8 +178,8 @@ export default function Hero() {
       className="relative bg-forest-ink sm:h-[118vh]"
       aria-label={isAm ? 'የጋብቻ መክፈቻ' : 'Wedding hero'}
     >
-      {/* Desktop composition remains unchanged. */}
-      <div className="hidden sm:block sticky top-0 h-screen w-full overflow-hidden bg-forest-ink">
+      {/* Desktop */}
+      <div className="sticky top-0 hidden h-screen w-full overflow-hidden bg-forest-ink sm:block">
         <div className="absolute inset-0">
           <motion.div
             className="absolute inset-0"
@@ -166,43 +189,8 @@ export default function Hero() {
               willChange: 'transform',
             }}
           >
-            <div
-              className="absolute inset-0"
-              style={{
-                opacity: aVisible ? 1 : 0,
-                transition: imageTransition,
-                willChange: 'opacity',
-              }}
-            >
-              <img
-                src={layerA.image}
-                alt={layerA.alt}
-                className="h-full w-full object-cover"
-                style={{ objectPosition: `center ${layerA.focal}` }}
-                draggable={false}
-                loading="eager"
-                decoding="async"
-              />
-            </div>
-
-            <div
-              className="absolute inset-0"
-              style={{
-                opacity: bVisible ? 1 : 0,
-                transition: imageTransition,
-                willChange: 'opacity',
-              }}
-            >
-              <img
-                src={layerB.image}
-                alt={layerB.alt}
-                className="h-full w-full object-cover"
-                style={{ objectPosition: `center ${layerB.focal}` }}
-                draggable={false}
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
+            <PhotoLayer slide={layerA} visible={aVisible} transition={imageTransition} eager />
+            <PhotoLayer slide={layerB} visible={bVisible} transition={imageTransition} />
           </motion.div>
 
           <div
@@ -286,7 +274,7 @@ export default function Hero() {
                   key={slide.image}
                   type="button"
                   onClick={() => crossfadeTo(index)}
-                  className="group relative flex-shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne"
+                  className="relative flex-shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne"
                   style={{
                     width: isActive ? 76 : 54,
                     height: isActive ? 96 : 68,
@@ -326,7 +314,7 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Mobile: the photograph becomes the full hero background. */}
+      {/* Mobile */}
       <div
         className="relative isolate min-h-[100svh] touch-pan-y overflow-hidden sm:hidden"
         onPointerDown={handlePointerDown}
@@ -336,76 +324,35 @@ export default function Hero() {
         }}
       >
         <div className="absolute inset-0 -z-20 bg-forest-ink">
-          <div
-            className="absolute inset-0"
-            style={{
-              opacity: aVisible ? 1 : 0,
-              transition: imageTransition,
-              willChange: 'opacity',
-            }}
-          >
-            <img
-              src={layerA.image}
-              alt={layerA.alt}
-              className="h-full w-full object-cover"
-              style={{ objectPosition: `center ${layerA.focal}` }}
-              draggable={false}
-              loading="eager"
-              decoding="async"
-            />
-          </div>
-
-          <div
-            className="absolute inset-0"
-            style={{
-              opacity: bVisible ? 1 : 0,
-              transition: imageTransition,
-              willChange: 'opacity',
-            }}
-          >
-            <img
-              src={layerB.image}
-              alt={layerB.alt}
-              className="h-full w-full object-cover"
-              style={{ objectPosition: `center ${layerB.focal}` }}
-              draggable={false}
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
+          <PhotoLayer slide={layerA} visible={aVisible} transition={imageTransition} eager />
+          <PhotoLayer slide={layerB} visible={bVisible} transition={imageTransition} />
         </div>
 
-        {/* Green color grade across the entire mobile image. */}
+        {/* Only the LEFT side has a dark green gradient for the text. */}
         <div
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
             background:
-              'linear-gradient(to bottom, rgba(18,39,28,0.92) 0%, rgba(22,47,34,0.80) 27%, rgba(23,49,35,0.34) 54%, rgba(18,39,28,0.82) 100%)',
+              'linear-gradient(to right, rgba(10,27,18,0.97) 0%, rgba(14,33,22,0.92) 33%, rgba(18,40,28,0.72) 54%, rgba(22,47,34,0.22) 76%, rgba(22,47,34,0.02) 100%)',
           }}
         />
-        <div
-          className="pointer-events-none absolute inset-0 -z-10"
-          style={{
-            background:
-              'radial-gradient(ellipse at 50% 48%, rgba(39,73,51,0.02) 15%, rgba(15,31,23,0.38) 100%)',
-          }}
-        />
+
         <div className="grain pointer-events-none absolute inset-0 -z-10 opacity-[0.06] mix-blend-overlay" />
 
         <div className="mx-auto flex min-h-[100svh] w-full max-w-[34rem] flex-col px-[clamp(20px,6vw,48px)] pb-[clamp(28px,7vw,48px)] pt-[clamp(96px,18vw,132px)]">
-          <motion.p className="label text-cream/65" {...enter(0.2)}>
+          <motion.p className="label text-cream/70" {...enter(0.2)}>
             {t.hero.eyebrow}
           </motion.p>
 
-          <div className="mt-[clamp(20px,5vw,32px)]">
+          <div className="mt-[clamp(20px,5vw,34px)]">
             <motion.h1
-              className={`break-words font-medium text-cream drop-shadow-[0_4px_18px_rgba(0,0,0,0.24)] ${
-                isAm ? 'leading-[1.16]' : 'leading-[0.96]'
+              className={`break-words font-medium text-cream drop-shadow-[0_5px_18px_rgba(0,0,0,0.35)] ${
+                isAm ? 'leading-[1.14]' : 'leading-[0.94]'
               }`}
               style={{
                 fontSize: isAm
-                  ? 'clamp(2.7rem, 12vw, 4.8rem)'
-                  : 'clamp(3.15rem, 13.5vw, 5.4rem)',
+                  ? 'clamp(3.15rem, 14.5vw, 5.8rem)'
+                  : 'clamp(3.7rem, 16vw, 6.7rem)',
                 fontFamily: 'var(--font-display, inherit)',
               }}
               {...enter(0.35)}
@@ -414,19 +361,19 @@ export default function Hero() {
             </motion.h1>
 
             <motion.div {...enter(0.45)}>
-              <span className="my-[clamp(9px,2.5vw,15px)] block font-display text-[clamp(2rem,8vw,2.7rem)] font-light italic leading-none text-champagne/80">
+              <span className="my-[clamp(10px,2.8vw,17px)] block font-display text-[clamp(2.2rem,9vw,3rem)] font-light italic leading-none text-champagne/90">
                 &
               </span>
             </motion.div>
 
             <motion.p
-              className={`break-words font-medium text-cream drop-shadow-[0_4px_18px_rgba(0,0,0,0.24)] ${
-                isAm ? 'leading-[1.16]' : 'leading-[0.96]'
+              className={`break-words font-medium text-cream drop-shadow-[0_5px_18px_rgba(0,0,0,0.35)] ${
+                isAm ? 'leading-[1.14]' : 'leading-[0.94]'
               }`}
               style={{
                 fontSize: isAm
-                  ? 'clamp(2.7rem, 12vw, 4.8rem)'
-                  : 'clamp(3.15rem, 13.5vw, 5.4rem)',
+                  ? 'clamp(3.15rem, 14.5vw, 5.8rem)'
+                  : 'clamp(3.7rem, 16vw, 6.7rem)',
                 fontFamily: 'var(--font-display, inherit)',
               }}
               {...enter(0.55)}
@@ -435,38 +382,38 @@ export default function Hero() {
             </motion.p>
           </div>
 
-          <motion.div className="mt-[clamp(22px,6vw,34px)]" {...enter(0.7)}>
+          <motion.div className="mt-[clamp(24px,6vw,36px)]" {...enter(0.7)}>
             <Ornament className="!justify-start" tone="cream" />
           </motion.div>
 
-          <motion.div className="mt-[clamp(18px,5vw,28px)]" {...enter(0.8)}>
-            <p className="font-display text-[clamp(1.3rem,5.3vw,1.75rem)] italic leading-snug text-champagne">
+          <motion.div className="mt-[clamp(19px,5vw,30px)]" {...enter(0.8)}>
+            <p className="font-display text-[clamp(1.45rem,5.8vw,1.9rem)] italic leading-snug text-champagne">
               {t.hero.date}
             </p>
+
             <p
-              className={`mt-2 max-w-full font-body text-cream/75 ${
+              className={`mt-2 max-w-full font-body text-cream/80 ${
                 isAm
-                  ? 'text-[clamp(0.86rem,3.5vw,1rem)] leading-[1.9]'
-                  : 'text-[clamp(0.65rem,2.6vw,0.76rem)] uppercase tracking-[0.2em] leading-relaxed'
+                  ? 'text-[clamp(0.9rem,3.7vw,1.06rem)] leading-[1.9]'
+                  : 'text-[clamp(0.68rem,2.7vw,0.8rem)] uppercase tracking-[0.19em] leading-relaxed'
               }`}
             >
               {t.hero.dateEth} — {t.hero.location}
             </p>
           </motion.div>
 
-          {/* Reserved editorial image field: keeps the couple visually dominant. */}
-          <div className="min-h-[clamp(210px,57vw,320px)] flex-1" aria-hidden="true" />
+          <div className="min-h-[clamp(190px,51vw,310px)] flex-1" aria-hidden="true" />
 
           <motion.div
-            className="flex items-end justify-between gap-3 border-t border-cream/20 pt-[clamp(16px,4.5vw,24px)]"
+            className="flex items-end justify-between gap-3 border-t border-cream/25 pt-[clamp(16px,4.5vw,24px)]"
             {...enter(1.05)}
           >
             <div className="min-w-0 pb-1">
-              <p className="font-body text-[9px] uppercase tracking-[0.26em] text-champagne/75">
+              <p className="font-body text-[9px] uppercase tracking-[0.26em] text-champagne/80">
                 {t.categories[active]}
               </p>
               <p
-                className={`mt-1 font-body text-cream/65 ${
+                className={`mt-1 font-body text-cream/70 ${
                   isAm
                     ? 'text-[11px] leading-relaxed'
                     : 'text-[9px] uppercase tracking-[0.18em]'
@@ -480,7 +427,7 @@ export default function Hero() {
               <button
                 type="button"
                 onClick={prevSlide}
-                className="grid h-10 w-10 place-items-center border border-cream/35 bg-forest-ink/25 text-xl text-cream transition-colors hover:border-champagne hover:text-champagne focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne"
+                className="grid h-10 w-10 place-items-center border border-cream/40 bg-forest-ink/40 text-xl text-cream transition-colors hover:border-champagne hover:text-champagne focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne"
                 aria-label={isAm ? 'የቀደመው ፎቶ' : 'Previous photo'}
               >
                 <span aria-hidden="true">←</span>
@@ -505,7 +452,7 @@ export default function Hero() {
                           width: isActive ? 20 : 8,
                           backgroundColor: isActive
                             ? 'rgba(238,215,172,0.95)'
-                            : 'rgba(248,242,225,0.52)',
+                            : 'rgba(248,242,225,0.55)',
                           transition: reduced
                             ? 'none'
                             : 'width 280ms cubic-bezier(0.33,0,0.15,1), background-color 280ms ease',
@@ -519,7 +466,7 @@ export default function Hero() {
               <button
                 type="button"
                 onClick={nextSlide}
-                className="grid h-10 w-10 place-items-center border border-cream/35 bg-forest-ink/25 text-xl text-cream transition-colors hover:border-champagne hover:text-champagne focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne"
+                className="grid h-10 w-10 place-items-center border border-cream/40 bg-forest-ink/40 text-xl text-cream transition-colors hover:border-champagne hover:text-champagne focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne"
                 aria-label={isAm ? 'የሚቀጥለው ፎቶ' : 'Next photo'}
               >
                 <span aria-hidden="true">→</span>
