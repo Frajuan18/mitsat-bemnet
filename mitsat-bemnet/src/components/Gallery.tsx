@@ -88,7 +88,7 @@ export default function Gallery() {
                     draggable={false}
                     className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
                     style={{ objectPosition: `center ${p.focal}` }}
-                                    />
+                  />
                 </div>
               </div>
             </motion.figure>

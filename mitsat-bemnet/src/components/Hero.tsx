@@ -405,24 +405,9 @@ export default function Hero() {
           <div className="min-h-[clamp(190px,51vw,310px)] flex-1" aria-hidden="true" />
 
           <motion.div
-            className="flex items-end justify-between gap-3 border-t border-cream/25 pt-[clamp(16px,4.5vw,24px)]"
+            className="flex items-end justify-end gap-3 border-t border-cream/25 pt-[clamp(16px,4.5vw,24px)]"
             {...enter(1.05)}
           >
-            <div className="min-w-0 pb-1">
-              <p className="font-body text-[9px] uppercase tracking-[0.26em] text-champagne/80">
-                {t.categories[active]}
-              </p>
-              <p
-                className={`mt-1 font-body text-cream/70 ${
-                  isAm
-                    ? 'text-[11px] leading-relaxed'
-                    : 'text-[9px] uppercase tracking-[0.18em]'
-                }`}
-              >
-                {t.locations[active]}
-              </p>
-            </div>
-
             <div className="flex flex-shrink-0 items-center gap-2">
               <button
                 type="button"
