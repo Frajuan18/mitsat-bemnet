@@ -1,23 +1,66 @@
 ﻿@import "tailwindcss";
 
 /* ---------------------------------------------------------------------------
-   Design tokens — Deep Forest Green & Warm Champagne Cream
+   Licensed Amharic faces.
+   Drop the licensed font files into `public/fonts/` with these exact names
+   and they are picked up automatically; until then the stack falls back to
+   Google-hosted Noto Ethiopic faces, which render Ethiopic beautifully.
+--------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Bela Bereka";
+  src:
+    url("/fonts/BelaBereka.woff2") format("woff2"),
+    url("/fonts/BelaBereka.ttf") format("truetype"),
+    local("Bela Bereka");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Benaiah";
+  src:
+    url("/fonts/Benaiah.woff2") format("woff2"),
+    url("/fonts/Benaiah.ttf") format("truetype"),
+    local("Benaiah");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------------------------------------------------------------------------
+   Design tokens — warm champagne cream & deep forest green
 --------------------------------------------------------------------------- */
 @theme {
-  --color-forest: #405842;
-  --color-forest-mid: #4b644d;
-  --color-forest-deep: #374b39;
-  --color-forest-ink: #2b3d2d;
+  --color-cream: #f4d9ad;
+  --color-cream-pale: #f8e6c6;
+  --color-cream-mist: #faf0de;
+  --color-champagne: #eed7ac;
+  --color-taupe: #a89575;
 
-  --color-cream: #f3d9b3;
-  --color-cream-pale: #f6e4c6;
-  --color-cream-mist: #faf0dd;
+  --color-forest: #304b38;
+  --color-forest-deep: #233a2b;
+  --color-forest-ink: #1a2c20;
 
-  --font-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
-  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-body: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-am-display: "Bela Bereka", "Noto Serif Ethiopic", "Abyssinica SIL", serif;
+  --font-am-body: "Benaiah", "Noto Sans Ethiopic", "Abyssinica SIL", sans-serif;
 
-  --shadow-soft: 0 24px 60px -24px rgb(43 61 45 / 0.35);
-  --shadow-lift: 0 12px 30px -12px rgb(43 61 45 / 0.4);
+  --shadow-soft: 0 24px 60px -24px rgb(26 44 32 / 0.35);
+  --shadow-lift: 0 12px 30px -12px rgb(26 44 32 / 0.4);
+}
+
+/* ---------------------------------------------------------------------------
+   Amharic typography system.
+   The display/body font variables are re-mapped when the document language is
+   Amharic, so every `font-display` / `font-body` utility switches automatically.
+   Ethiopic script is NOT small-caps Latin: it needs taller line-heights, near
+   zero letter-spacing, no text-transform, and larger minimum sizes.
+--------------------------------------------------------------------------- */
+html[lang="am"] {
+  --font-display: "Bela Bereka", "Noto Serif Ethiopic", "Abyssinica SIL", serif;
+  --font-body: "Benaiah", "Noto Sans Ethiopic", "Abyssinica SIL", sans-serif;
 }
 
 html {
@@ -27,56 +70,265 @@ html {
 }
 
 body {
-  @apply bg-cream font-sans text-forest-ink antialiased;
+  @apply bg-cream font-body text-forest antialiased;
   font-weight: 400;
-  letter-spacing: 0.01em;
   overflow-x: clip;
+  text-rendering: optimizeLegibility;
 }
 
-/* Tasteful, restrained scrollbar in the wedding palette */
+/* Editorial letter-spaced label (EN) — reworked, not shrunken, for Amharic */
+.label {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.42em;
+  line-height: 1.7;
+}
+
+html[lang="am"] .label {
+  font-size: 0.875rem;
+  text-transform: none;
+  letter-spacing: 0.03em;
+  line-height: 2;
+}
+
+/* High-contrast serif display sizes — dedicated Amharic scale */
+.display-hero {
+  font-family: var(--font-display);
+  font-size: clamp(3.25rem, 11vw, 8rem);
+  line-height: 0.95;
+  letter-spacing: 0.04em;
+}
+
+html[lang="am"] .display-hero {
+  font-size: clamp(2.4rem, 8.5vw, 6rem);
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  font-weight: 500;
+}
+
+.display-1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+}
+
+html[lang="am"] .display-1 {
+  font-size: clamp(1.9rem, 5vw, 3.4rem);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+
+.display-2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.6vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+}
+
+html[lang="am"] .display-2 {
+  font-size: clamp(1.45rem, 3.2vw, 2.2rem);
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+}
+
+.display-3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+  line-height: 1.25;
+  letter-spacing: 0.05em;
+}
+
+html[lang="am"] .display-3 {
+  font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+}
+
+/* Body copy — Amharic gets a looser rhythm and slightly larger size */
+.body-copy {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  line-height: 1.85;
+}
+
+html[lang="am"] .body-copy {
+  font-size: 1.0625rem;
+  line-height: 2.05;
+}
+
+/* ---------------------------------------------------------------------------
+   Palette chrome
+--------------------------------------------------------------------------- */
 ::-webkit-scrollbar {
   width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f3d9b3;
+  background: #f4d9ad;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(64 88 66 / 0.3);
-  border: 3px solid #f3d9b3;
+  background: rgb(48 75 56 / 0.3);
+  border: 3px solid #f4d9ad;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(64 88 66 / 0.5);
+  background: rgb(48 75 56 / 0.5);
 }
 
 ::selection {
-  background-color: #405842;
-  color: #f3d9b3;
+  background-color: #304b38;
+  color: #eed7ac;
 }
 
 :focus-visible {
-  outline: 2px solid #405842;
+  outline: 2px solid #304b38;
   outline-offset: 3px;
 }
 
-/* Lighter outline on dark (forest) surfaces */
 .on-forest :focus-visible {
-  outline-color: #f3d9b3;
+  outline-color: #eed7ac;
 }
 
 /* ---------------------------------------------------------------------------
-   Split-flap countdown helpers
+   Mechanical split-flap countdown cards.
+   True two-half flip: the upper flap folds down around its bottom edge
+   (rotateX 0 -> -90), revealing the new number in the static upper half;
+   then the lower flap unfolds (rotateX 90 -> 0) to land the new number.
+   Transform + opacity only; flaps are absolutely positioned so the card
+   never changes size and surrounding content never moves.
 --------------------------------------------------------------------------- */
-.flip-scene {
+.flip-card {
+  position: relative;
   perspective: 700px;
 }
 
-.flip-face {
+.flip-half {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+}
+
+/* Each digit span is full card height, offset so the correct half shows. */
+.flip-digit {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 200%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+  color: #eed7ac;
+}
+
+.flip-half.upper {
+  top: 0;
+  background: #233a2b;
+}
+
+.flip-half.upper .flip-digit {
+  top: 0;
+}
+
+/* subtle shade on the static upper half for physical depth */
+.flip-half.upper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(26 44 32 / 0.2);
+  pointer-events: none;
+}
+
+.flip-half.lower {
+  bottom: 0;
+  background: #304b38;
+}
+
+.flip-half.lower .flip-digit {
+  bottom: 0;
+}
+
+/* animated flaps — hidden until a flip begins */
+.flip-flap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50%;
+  overflow: hidden;
+  z-index: 6;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.flip-flap.upper {
+  top: 0;
+  background: #233a2b;
+  transform-origin: center bottom;
+  animation: flip-fold-down 0.32s cubic-bezier(0.45, 0.05, 0.35, 1) forwards;
+}
+
+.flip-flap.upper .flip-digit {
+  top: 0;
+}
+
+.flip-flap.lower {
+  bottom: 0;
+  background: #304b38;
+  transform: rotateX(90deg); /* folded away until its turn */
+  transform-origin: center top;
+  animation: flip-unfold-down 0.36s cubic-bezier(0.3, 0, 0.28, 1) 0.32s forwards;
+}
+
+.flip-flap.lower .flip-digit {
+  bottom: 0;
+}
+
+/* moving light/shade overlay — opacity only, sells the physical motion */
+.flip-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.flip-flap.upper .flip-shade {
+  background: linear-gradient(to bottom, rgb(26 44 32 / 0.6), rgb(26 44 32 / 0));
+  animation: flip-shade-in 0.32s linear forwards;
+}
+
+.flip-flap.lower .flip-shade {
+  background: linear-gradient(to top, rgb(26 44 32 / 0.6), rgb(26 44 32 / 0));
+  animation: flip-shade-out 0.36s linear 0.32s forwards;
+}
+
+@keyframes flip-fold-down {
+  from { transform: rotateX(0deg); }
+  to   { transform: rotateX(-90deg); }
+}
+
+@keyframes flip-unfold-down {
+  from { transform: rotateX(90deg); }
+  to   { transform: rotateX(0deg); }
+}
+
+@keyframes flip-shade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes flip-shade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
 /* ---------------------------------------------------------------------------
@@ -90,6 +342,25 @@ body {
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-4px); }
+}
+
+/* ---------------------------------------------------------------------------
+   Utilities
+--------------------------------------------------------------------------- */
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.text-balance {
+  text-wrap: balance;
 }
 
 /* ---------------------------------------------------------------------------

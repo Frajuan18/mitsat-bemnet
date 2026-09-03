@@ -9,7 +9,7 @@ interface OrnamentProps {
 }
 
 export default function Ornament({ className = '', tone = 'forest' }: OrnamentProps) {
-  const color = tone === 'forest' ? '#405842' : '#F3D9B3'
+  const color = tone === 'forest' ? '#304B38' : '#EED7AC'
 
   return (
     <div className={`flex items-center justify-center gap-3 ${className}`} aria-hidden="true">

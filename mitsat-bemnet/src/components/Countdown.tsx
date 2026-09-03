@@ -1,28 +1,21 @@
-﻿import { useEffect, useState, useRef } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
+import { useLang } from '../i18n'
 import Ornament from './Ornament'
+import Reveal from './Reveal'
 
-const WEDDING_DATE = new Date(2026, 8, 20, 9, 0, 0).getTime()
+const WEDDING_DATE = new Date(2026, 8, 20, 15, 0, 0).getTime() // 3:00 PM local (= ከቀኑ ፱ ሰዓት)
 const pad = (n: number) => String(n).padStart(2, '0')
 
-interface CountdownProps {
-  lang: 'en' | 'am'
-}
-
-const t = (lang: 'en' | 'am') => ({
-  counting: lang === 'en' ? 'Counting down to' : 'የሚቆጥረው',
-  celebrate: lang === 'en' ? 'Today we celebrate' : 'ዛሬ እን_depend',
-  date: lang === 'en' ? 'September 20, 2026' : 'ሴፕቴምበር 20፣ 2026',
-  days: lang === 'en' ? 'Days' : 'ቀን',
-  hours: lang === 'en' ? 'Hours' : 'ሰዓት',
-  minutes: lang === 'en' ? 'Minutes' : 'ደቂቃ',
-  seconds: lang === 'en' ? 'Seconds' : 'ሰከንድ',
-})
-
-export default function Countdown({ lang }: CountdownProps) {
+/**
+ * Countdown — real-time split-flap cards under an editorial heading.
+ * Cards read from a live 1s tick; labels adapt to the active language.
+ * Grid: 2x2 on small screens, four across from lg up.
+ */
+export default function Countdown() {
+  const { t } = useLang()
   const [now, setNow] = useState(() => Date.now())
   const reached = now >= WEDDING_DATE
-  const tr = t(lang)
 
   useEffect(() => {
     if (reached) return
@@ -30,144 +23,118 @@ export default function Countdown({ lang }: CountdownProps) {
     return () => window.clearInterval(interval)
   }, [reached])
 
-  const diff = Math.max(0, WEDDING_DATE - now)
-  const totalSeconds = Math.floor(diff / 1000)
-  const days = Math.floor(totalSeconds / 86400)
-  const hours = Math.floor((totalSeconds % 86400) / 3600)
-  const minutes = Math.floor((totalSeconds % 3600) / 60)
-  const seconds = totalSeconds % 60
+  const totalSeconds = Math.max(0, Math.floor((WEDDING_DATE - now) / 1000))
 
   return (
-    <section id="countdown" className="px-5 py-16 sm:py-20">
+    <section id="countdown" className="px-5 pb-12 pt-4 sm:pb-14">
       <div className="mx-auto max-w-4xl text-center">
-        <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-forest/80 sm:text-xs">
-          {reached ? tr.celebrate : tr.counting}
-        </p>
-        <h2 className="mt-4 font-serif text-4xl font-medium text-forest sm:text-5xl">
-          {tr.date}
-        </h2>
-        <Ornament className="mt-7" />
-        <div className="mt-10 grid grid-cols-4 gap-2 sm:gap-4 md:gap-6">
-          <FlipCard value={pad(days)} label={tr.days} />
-          <FlipCard value={pad(hours)} label={tr.hours} />
-          <FlipCard value={pad(minutes)} label={tr.minutes} />
-          <FlipCard value={pad(seconds)} label={tr.seconds} />
-        </div>
+        <Reveal>
+          <p className="label text-forest/75">{reached ? t.countdown.passed : t.countdown.eyebrow}</p>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <h2 className="display-1 mt-4 font-medium text-forest">{t.countdown.date}</h2>
+          <p className="label mt-2 text-taupe">{t.countdown.dateSub}</p>
+        </Reveal>
+        <Reveal delay={0.2}>
+          <Ornament className="mt-6" />
+        </Reveal>
+        <Reveal delay={0.3}>
+          <div className="mx-auto mt-8 grid max-w-3xl grid-cols-2 gap-3 sm:mt-9 sm:gap-4 lg:grid-cols-4 lg:gap-5">
+            <FlipCard value={pad(Math.floor(totalSeconds / 86400))} label={t.countdown.days} />
+            <FlipCard value={pad(Math.floor((totalSeconds % 86400) / 3600))} label={t.countdown.hours} />
+            <FlipCard value={pad(Math.floor((totalSeconds % 3600) / 60))} label={t.countdown.minutes} />
+            <FlipCard value={pad(totalSeconds % 60)} label={t.countdown.seconds} />
+          </div>
+        </Reveal>
       </div>
     </section>
   )
 }
 
-/* ─── Flip Card ────────────────────────────────────────────────────────── */
+/* ─── Flip Card — true two-half mechanical flip ──────────────────────────── */
+
+interface FlipState {
+  /** The settled / incoming value. */
+  value: string
+  /** The value shown before the current flip started; null when settled. */
+  previous: string | null
+}
+
+const digitClass =
+  'flip-digit font-body text-[1.75rem] font-medium tracking-tight sm:text-[2.5rem] lg:text-[3.25rem]'
 
 function FlipCard({ value, label }: { value: string; label: string }) {
   const reduced = useReducedMotion()
-  const [display, setDisplay] = useState(value)
-  const [prev, setPrev] = useState(value)
-  const [flipping, setFlipping] = useState(false)
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [display, setDisplay] = useState<FlipState>({ value, previous: null })
+  const [propValue, setPropValue] = useState(value)
 
-  useEffect(() => {
-    if (value === display) return
-    setPrev(display)
-    setDisplay(value)
-    if (reduced) return
-    setFlipping(true)
-    timeoutRef.current = setTimeout(() => setFlipping(false), 600)
-    return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current) }
-  }, [value, display, reduced])
+  /* When the incoming value changes, start a flip from the settled value.
+     Adjusting state during render (the React-recommended props-change
+     pattern) keeps effects clean and avoids restarting animations on
+     unrelated renders. If a flip is already running, the previous frame is
+     replaced so the animation converges on the newest value. */
+  if (value !== propValue) {
+    setPropValue(value)
+    setDisplay((d) => ({ value, previous: d.value }))
+  }
+
+  const flipping = display.previous !== null
+
+  /* The lower flap's landing ends the flip. Filter by animationName so the
+     shade overlays' animationend events (which bubble) are ignored. */
+  const onLowerFlapEnd = (e: React.AnimationEvent<HTMLDivElement>) => {
+    if (e.animationName !== 'flip-unfold-down') return
+    setDisplay((d) => ({ value: d.value, previous: null }))
+  }
 
   return (
-    <div className="flex flex-col items-center gap-2 sm:gap-3">
+    <div className="flex flex-col items-center gap-2.5 sm:gap-3">
       <div
-        className="relative h-16 w-full sm:h-20 md:h-24"
+        className="relative h-16 w-full sm:h-24 lg:h-28"
         role="timer"
         aria-label={`${label}: ${value}`}
-        style={{ perspective: 400 }}
       >
         {/* back plate */}
-        <div className="absolute inset-0 translate-y-1 rounded-lg bg-forest-deep/60" aria-hidden="true" />
+        <div className="absolute inset-0 translate-y-1 bg-forest-ink/50" aria-hidden="true" />
 
-        {/* card body */}
-        <div className="relative h-full overflow-hidden rounded-lg border border-forest-ink/50 bg-forest"
-          style={{ boxShadow: '0 6px 20px -4px rgba(0,0,0,0.35)' }}>
-
-          {/* static top half — always shows current value */}
-          <div className="absolute inset-x-0 top-0 h-1/2 overflow-hidden bg-forest-deep">
-            <span className="absolute inset-x-0 top-0 flex h-[200%] items-center justify-center font-sans text-3xl font-semibold tabular-nums tracking-tight text-cream sm:text-4xl md:text-5xl">
-              {display}
-            </span>
-            <div className="absolute inset-0 bg-forest-ink/15" aria-hidden="true" />
+        {/* flip card — fixed size, flaps are absolutely positioned */}
+        <div
+          className="flip-card h-full w-full border border-champagne/15"
+          style={{ boxShadow: '0 10px 28px -8px rgba(26,44,32,0.45)' }}
+        >
+          {/* static upper half — always shows the incoming value */}
+          <div className="flip-half upper">
+            <span className={digitClass}>{display.value}</span>
           </div>
 
-          {/* static bottom half — shows previous during flip, current otherwise */}
-          <div className="absolute inset-x-0 bottom-0 h-1/2 overflow-hidden bg-forest">
-            <span className="absolute inset-x-0 bottom-0 flex h-[200%] items-center justify-center font-sans text-3xl font-semibold tabular-nums tracking-tight text-cream sm:text-4xl md:text-5xl">
-              {flipping ? prev : display}
-            </span>
+          {/* static lower half — shows the old value until the flap lands */}
+          <div className="flip-half lower">
+            <span className={digitClass}>{flipping ? display.previous : display.value}</span>
           </div>
 
-          {/* center divider */}
-          <div className="absolute inset-x-0 top-1/2 z-20 h-[2px] -translate-y-1/2 bg-forest-ink" aria-hidden="true" />
-          <div className="absolute inset-x-0 top-1/2 z-20 h-px -translate-y-[2px] bg-cream/20" aria-hidden="true" />
+          {/* seam + hinge pins */}
+          <div className="absolute inset-x-0 top-1/2 z-20 h-px -translate-y-1/2 bg-forest-ink" aria-hidden="true" />
+          <div className="absolute inset-x-0 top-1/2 z-20 h-px -translate-y-[2px] bg-champagne/15" aria-hidden="true" />
+          <span className="absolute left-1 top-1/2 z-30 h-3 w-1.5 -translate-y-1/2 bg-forest-ink/80" aria-hidden="true" />
+          <span className="absolute right-1 top-1/2 z-30 h-3 w-1.5 -translate-y-1/2 bg-forest-ink/80" aria-hidden="true" />
 
-          {/* hinge pins */}
-          <span className="absolute left-0.5 top-1/2 z-30 h-3 w-1.5 -translate-y-1/2 rounded-sm bg-forest-ink/80" aria-hidden="true" />
-          <span className="absolute right-0.5 top-1/2 z-30 h-3 w-1.5 -translate-y-1/2 rounded-sm bg-forest-ink/80" aria-hidden="true" />
-
-          {/* ─── FLIP ANIMATION LEAVES ──────────────────────────────── */}
-          {flipping && !reduced && (
+          {/* animated flaps — mounted only while flipping */}
+          {!reduced && flipping && (
             <>
-              {/* top leaf — old value folds down and away */}
-              <FlipLeaf position="top" value={prev} />
-
-              {/* bottom leaf — new value folds in from below */}
-              <FlipLeaf position="bottom" value={display} delay />
+              <div className="flip-flap upper" aria-hidden="true">
+                <span className={digitClass}>{display.previous}</span>
+                <div className="flip-shade" />
+              </div>
+              <div className="flip-flap lower" aria-hidden="true" onAnimationEnd={onLowerFlapEnd}>
+                <span className={digitClass}>{display.value}</span>
+                <div className="flip-shade" />
+              </div>
             </>
           )}
         </div>
       </div>
 
-      <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-forest/80 sm:text-xs sm:tracking-[0.28em]">
-        {label}
-      </span>
-    </div>
-  )
-}
-
-/* ─── Flip Leaf ─────────────────────────────────────────────────────────── */
-
-function FlipLeaf({ position, value, delay = false }: { position: 'top' | 'bottom'; value: string; delay?: boolean }) {
-  const [phase, setPhase] = useState<'start' | 'mid' | 'end'>(delay ? 'start' : 'start')
-
-  useEffect(() => {
-    // start the flip after a tiny frame to ensure the initial state is painted
-    const raf = requestAnimationFrame(() => {
-      setPhase('mid')
-    })
-    return () => cancelAnimationFrame(raf)
-  }, [])
-
-  const isTop = position === 'top'
-
-  return (
-    <div
-      className="absolute inset-x-0 z-10 h-1/2 overflow-hidden"
-      style={{
-        top: isTop ? 0 : undefined,
-        bottom: isTop ? undefined : 0,
-        transformOrigin: isTop ? 'center bottom' : 'center top',
-        transform: `rotateX(${phase === 'mid' ? (isTop ? -90 : 90) : 0}deg)`,
-        transition: `transform ${delay ? '0.3s ease-out 0.3s' : '0.3s ease-in'}`,
-        backfaceVisibility: 'hidden',
-      }}
-    >
-      <div className={`absolute inset-0 ${isTop ? 'bg-forest-deep' : 'bg-forest'}`}>
-        <span className={`absolute inset-x-0 flex h-[200%] items-center justify-center font-sans text-3xl font-semibold tabular-nums tracking-tight text-cream sm:text-4xl md:text-5xl ${isTop ? 'top-0' : 'bottom-0'}`}>
-          {value}
-        </span>
-        {isTop && <div className="absolute inset-0 bg-forest-ink/15" />}
-      </div>
+      <span className="label text-forest/80">{label}</span>
     </div>
   )
 }

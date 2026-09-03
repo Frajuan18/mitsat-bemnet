@@ -28,10 +28,10 @@ export default function ScrollProgress() {
   }, [])
 
   return (
-    <div className="pointer-events-none fixed right-3 top-0 z-40 flex h-svh flex-col items-center justify-center sm:right-5" aria-hidden="true">
+    <div className="pointer-events-none fixed right-3 top-0 z-40 hidden h-svh flex-col items-center justify-center sm:flex" aria-hidden="true">
       <div
         className="relative h-[38vh] w-px overflow-hidden"
-        style={{ backgroundColor: 'rgb(64 88 66 / 0.18)' }}
+        style={{ backgroundColor: 'rgb(48 75 56 / 0.18)' }}
       >
         <div
           className="absolute inset-x-0 top-0 w-px bg-forest transition-opacity duration-700"

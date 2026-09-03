@@ -1,6 +1,6 @@
 ﻿import { useState, type FormEvent } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { Check, Send } from 'lucide-react'
+import { useLang } from '../i18n'
 import Ornament from './Ornament'
 import Reveal from './Reveal'
 
@@ -11,16 +11,18 @@ type Status = 'idle' | 'submitting' | 'error'
 
 /**
  * WishesForm — Leave Your Wishes.
- * Sends name + wish to the Express backend (POST /api/wishes), which stores
- * it in MongoDB. Shows a loading state, clears the form on success, and
- * confirms the wish was received with love.
+ * Fully bilingual; sends name + wish to the Express backend (POST /api/wishes),
+ * which stores it in MongoDB. Refined focus states, loading state, translated
+ * validation messages and a drawn-check success confirmation.
  */
 export default function WishesForm() {
+  const { t } = useLang()
   const reduceMotion = useReducedMotion()
   const [name, setName] = useState('')
   const [wish, setWish] = useState('')
   const [status, setStatus] = useState<Status>('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const [sent, setSent] = useState(false)
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -31,12 +33,12 @@ export default function WishesForm() {
 
     if (!cleanName) {
       setStatus('error')
-      setErrorMessage('Please enter your name.')
+      setErrorMessage(t.wishes.errName)
       return
     }
     if (!cleanWish) {
       setStatus('error')
-      setErrorMessage('Please write a wish to share.')
+      setErrorMessage(t.wishes.errWish)
       return
     }
 
@@ -51,7 +53,7 @@ export default function WishesForm() {
       })
       const data = await res.json().catch(() => null)
       if (!res.ok) {
-        throw new Error(data?.error ?? "We couldn't send your wish. Please try again.")
+        throw new Error(data?.error ?? t.wishes.errGeneric)
       }
       setName('')
       setWish('')
@@ -59,36 +61,47 @@ export default function WishesForm() {
       setSent(true)
     } catch (err) {
       setStatus('error')
-      setErrorMessage(
-        err instanceof Error ? err.message : 'We could not send your wish. Please try again.'
-      )
+      setErrorMessage(err instanceof Error && err.message ? err.message : t.wishes.errGeneric)
     }
   }
 
-  const [sent, setSent] = useState(false)
-
   if (sent) {
     return (
-      <section className="px-5 py-20 text-center sm:py-28">
+      <section className="px-5 py-14 text-center sm:py-16">
         <div className="mx-auto max-w-lg">
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
           >
-            <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-forest">
-              <Check className="text-cream" size={26} strokeWidth={2.5} />
-            </div>
-            <h3 className="mt-6 font-serif text-3xl font-medium text-forest">Thank You</h3>
-            <p className="mt-3 text-sm leading-relaxed text-forest-ink/90">
-              Your wish has been received with love.
-            </p>
+            <motion.div
+              className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-forest"
+              initial={reduceMotion ? false : { scale: 0.7 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 18 }}
+            >
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+                <motion.path
+                  d="M5 13.5L11 19.5L21 7.5"
+                  stroke="#EED7AC"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  initial={reduceMotion ? { pathLength: 1 } : { pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2, ease: 'easeOut' }}
+                />
+              </svg>
+            </motion.div>
+            <h3 className="display-2 mt-7 font-medium text-forest">{t.wishes.thanks}</h3>
+            <p className="body-copy mt-4 text-forest/90">{t.wishes.thanksBody}</p>
+            <Ornament className="mt-8" />
             <button
               type="button"
               onClick={() => setSent(false)}
-              className="mt-8 text-[11px] uppercase tracking-[0.3em] text-forest/80 underline-offset-4 transition-colors hover:text-forest hover:underline"
+              className="label mt-8 text-forest/70 underline-offset-4 transition-colors hover:text-forest hover:underline"
             >
-              Send another wish
+              {t.wishes.again}
             </button>
           </motion.div>
         </div>
@@ -97,29 +110,20 @@ export default function WishesForm() {
   }
 
   return (
-    <section className="px-5 py-20 sm:py-28">
+    <section className="px-5 pb-14 pt-2 sm:pb-16">
       <div className="mx-auto max-w-lg">
         <Reveal className="text-center">
-          <p className="text-[11px] font-medium uppercase tracking-[0.42em] text-forest/80">
-            Guests&apos; wishes
-          </p>
-          <h2 className="mt-4 font-serif text-4xl font-medium text-forest sm:text-5xl">
-            Leave Your Wishes
-          </h2>
-          <Ornament className="mt-7" />
-          <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-forest/85">
-            Share a message, blessing, or wish with us as we celebrate this special day.
-          </p>
+          <p className="label text-forest/75">{t.wishes.eyebrow}</p>
+          <h2 className="display-1 mt-4 font-medium text-forest">{t.wishes.title}</h2>
+          <Ornament className="mt-5" />
+          <p className="body-copy mx-auto mt-4 max-w-md text-forest/85">{t.wishes.desc}</p>
         </Reveal>
 
         <Reveal delay={0.15}>
-          <form onSubmit={handleSubmit} className="mt-12 space-y-8" noValidate>
+          <form onSubmit={handleSubmit} className="mt-9 space-y-7" noValidate>
             <div>
-              <label
-                htmlFor="wish-name"
-                className="block text-[11px] font-medium uppercase tracking-[0.22em] text-forest/80"
-              >
-                Name
+              <label htmlFor="wish-name" className="label block text-forest/80">
+                {t.wishes.nameLabel}
               </label>
               <input
                 id="wish-name"
@@ -127,31 +131,28 @@ export default function WishesForm() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
+                placeholder={t.wishes.namePlaceholder}
                 maxLength={100}
                 disabled={status === 'submitting'}
                 autoComplete="name"
-                className="mt-3 w-full border-b border-forest/30 bg-transparent px-1 py-3 text-sm text-forest-ink placeholder:text-forest/40 transition-colors focus:border-forest focus:outline-none disabled:opacity-60"
+                className="mt-3 w-full border-b border-forest/30 bg-transparent px-1 py-3 font-body text-sm text-forest placeholder:text-forest/40 transition-colors focus:border-forest focus:outline-none disabled:opacity-60"
               />
             </div>
 
             <div>
-              <label
-                htmlFor="wish-message"
-                className="block text-[11px] font-medium uppercase tracking-[0.22em] text-forest/80"
-              >
-                Your wish
+              <label htmlFor="wish-message" className="label block text-forest/80">
+                {t.wishes.wishLabel}
               </label>
               <textarea
                 id="wish-message"
                 name="wish"
                 value={wish}
                 onChange={(e) => setWish(e.target.value)}
-                placeholder="Write your message..."
+                placeholder={t.wishes.wishPlaceholder}
                 rows={4}
                 maxLength={1000}
                 disabled={status === 'submitting'}
-                className="mt-3 w-full resize-none rounded-sm border border-forest/30 bg-cream-mist/40 px-4 py-3 text-sm leading-relaxed text-forest-ink placeholder:text-forest/40 transition-colors focus:border-forest focus:outline-none disabled:opacity-60"
+                className="mt-3 w-full resize-none border border-forest/30 bg-cream-mist/50 px-4 py-3 font-body text-sm leading-relaxed text-forest placeholder:text-forest/40 transition-colors focus:border-forest focus:outline-none disabled:opacity-60"
               />
             </div>
 
@@ -160,7 +161,7 @@ export default function WishesForm() {
                 <motion.p
                   key="wish-error"
                   role="alert"
-                  className="text-xs leading-relaxed text-forest-ink/75"
+                  className="font-body text-xs leading-relaxed text-forest/90"
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
@@ -173,22 +174,22 @@ export default function WishesForm() {
             <motion.button
               type="submit"
               disabled={status === 'submitting'}
-              className="flex w-full items-center justify-center gap-3 rounded-sm bg-forest px-6 py-4 text-[11px] font-medium uppercase tracking-[0.3em] text-cream transition-shadow hover:shadow-lift disabled:cursor-not-allowed disabled:opacity-70"
+              className="on-forest flex w-full items-center justify-center gap-3 bg-forest px-6 py-4 text-cream transition-shadow hover:shadow-lift disabled:cursor-not-allowed disabled:opacity-70"
               whileHover={reduceMotion || status === 'submitting' ? undefined : { y: -2 }}
-              whileTap={reduceMotion || status === 'submitting' ? undefined : { scale: 0.98 }}
+              whileTap={reduceMotion || status === 'submitting' ? undefined : { scale: 0.99 }}
             >
               {status === 'submitting' ? (
-                <motion.span
-                  className="h-4 w-4 rounded-full border-2 border-cream/40 border-t-cream"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 0.9, repeat: Infinity, ease: 'linear' }}
-                  aria-hidden="true"
-                />
-              ) : (
                 <>
-                  <span>Send Wish</span>
-                  <Send size={15} />
+                  <motion.span
+                    className="h-4 w-4 rounded-full border-2 border-cream/30 border-t-cream"
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 0.9, repeat: Infinity, ease: 'linear' }}
+                    aria-hidden="true"
+                  />
+                  <span className="label !tracking-[0.3em]">{t.wishes.sending}</span>
                 </>
+              ) : (
+                <span className="label !tracking-[0.3em]">{t.wishes.submit}</span>
               )}
             </motion.button>
           </form>
