@@ -8,12 +8,12 @@
  * `focal` controls object-position so every crop keeps the subject framed.
  */
 
-import photo1 from '../assets/IMG_20260831_223917_777.jpg'
-import photo2 from '../assets/IMG_20260831_223929_594.jpg'
-import photo3 from '../assets/IMG_20260831_224001_745.jpg'
-import photo4 from '../assets/IMG_20260831_224007_863.jpg'
-import photo5 from '../assets/IMG_20260831_224011_728.jpg'
-import photo6 from '../assets/IMG_20260831_224041_058.jpg'
+import photo1 from '../assets/IMG_20260831_223917_777.JPG'
+import photo2 from '../assets/IMG_20260831_223929_594.JPG'
+import photo3 from '../assets/IMG_20260831_224001_745.JPG'
+import photo4 from '../assets/IMG_20260831_224007_863.JPG'
+import photo5 from '../assets/IMG_20260831_224011_728.JPG'
+import photo6 from '../assets/IMG_20260831_224041_058.JPG'
 
 export interface Photo {
   src: string
