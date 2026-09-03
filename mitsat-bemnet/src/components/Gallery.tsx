@@ -88,23 +88,7 @@ export default function Gallery() {
                     draggable={false}
                     className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
                     style={{ objectPosition: `center ${p.focal}` }}
-                  />
-                  {/* caption veil — fades in on hover */}
-                  <div
-                    className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                    style={{
-                      background:
-                        'linear-gradient(to top, rgba(26,44,32,0.72) 0%, rgba(26,44,32,0) 45%)',
-                    }}
-                  />
-                  <figcaption className="absolute inset-x-0 bottom-0 translate-y-2 p-3 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
-                    <span className="block font-body text-[9px] uppercase tracking-[0.3em] text-champagne/85">
-                      {t.categories[i]}
-                    </span>
-                    <span className="mt-1 block font-body text-[10px] uppercase tracking-[0.2em] text-cream/60">
-                      {t.locations[i]}
-                    </span>
-                  </figcaption>
+                                    />
                 </div>
               </div>
             </motion.figure>
