@@ -18,7 +18,7 @@ export default function LanguageSwitch() {
   return (
     <nav
       aria-label={isAm ? 'የቋንቋ ምርጫ' : 'Language selection'}
-      className="fixed right-4 top-4 z-[70] sm:right-6 sm:top-6"
+      className="fixed right-3 top-3 z-[70] sm:right-6 sm:top-6"
     >
       <div
         className="on-forest relative flex items-center rounded-full border border-champagne/25 bg-forest-deep/80 p-1 shadow-lift backdrop-blur-md"

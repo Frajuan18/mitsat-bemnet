@@ -38,7 +38,7 @@ export default function EthiopianCalendar() {
   ]
 
   return (
-    <section id="calendar" className="bg-forest-deep px-5 py-12 sm:py-16">
+    <section id="calendar" className="bg-forest-deep px-5 py-10 sm:py-16">
       <div className="mx-auto max-w-2xl">
         <Reveal className="text-center">
           <p className="label text-champagne/60">{t.calendar.eyebrow}</p>
@@ -86,7 +86,7 @@ export default function EthiopianCalendar() {
                 </div>
 
                 {/* day grid */}
-                <div className="grid grid-cols-7 gap-1 pt-3 sm:gap-1.5">
+                <div className="grid grid-cols-7 gap-1 pt-2 sm:gap-1.5 sm:pt-3">
                   {cells.map((day, i) => {
                     if (day === null) return <span key={`empty-${i}`} aria-hidden="true" />
                     const isWedding = day === WEDDING_DAY
@@ -94,7 +94,7 @@ export default function EthiopianCalendar() {
                       <div
                         key={day}
                         title={`${t.calendar.awaiting}: ${gregorianFor(day)}`}
-                        className={`relative flex aspect-square items-center justify-center font-body text-[13px] tabular-nums sm:text-sm ${
+                        className={`relative flex aspect-square items-center justify-center font-body text-[14px] tabular-nums sm:text-sm ${
                           isWedding
                             ? 'border border-champagne/40 bg-forest font-medium text-champagne shadow-[0_8px_24px_-6px_rgba(0,0,0,0.5)]'
                             : 'text-champagne/70'

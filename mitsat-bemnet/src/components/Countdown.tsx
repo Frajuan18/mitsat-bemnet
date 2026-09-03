@@ -25,7 +25,7 @@ export default function Countdown() {
   const totalSeconds = Math.max(0, Math.floor((WEDDING_DATE - now) / 1000))
 
   return (
-    <section id="countdown" className="px-5 pb-24 pt-4 sm:pb-36 sm:pt-5">
+    <section id="countdown" className="px-5 pb-20 pt-6 sm:pb-36 sm:pt-5">
       <div className="mx-auto max-w-4xl text-center">
         <Reveal>
           <p className="label text-forest/75">{reached ? t.countdown.passed : t.countdown.eyebrow}</p>
@@ -60,7 +60,7 @@ interface FlipState {
 }
 
 const digitClass =
-  'flip-digit font-body text-[1.75rem] font-medium tracking-tight sm:text-[2.5rem] lg:text-[3.25rem]'
+  'flip-digit font-body text-[2rem] font-medium tracking-tight sm:text-[2.5rem] lg:text-[3.25rem]'
 
 function FlipCard({ value, label }: { value: string; label: string }) {
   const [display, setDisplay] = useState<FlipState>({ value, previous: null })
@@ -88,7 +88,7 @@ function FlipCard({ value, label }: { value: string; label: string }) {
   return (
     <div className="flex flex-col items-center gap-2.5 sm:gap-3">
       <div
-        className="relative h-16 w-full sm:h-24 lg:h-28"
+        className="relative h-20 w-full sm:h-24 lg:h-28"
         role="timer"
         aria-label={`${label}: ${value}`}
       >

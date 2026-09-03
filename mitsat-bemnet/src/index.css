@@ -2,16 +2,14 @@
 
 /* ---------------------------------------------------------------------------
    Amharic faces.
-   `Bela Bereka` / `Benaiah` are licensed — drop those files into
-   `public/fonts/` with the exact names below and they are picked up
-   automatically. The open-source Noto Serif/Sans Ethiopic faces are bundled
-   in `public/fonts/` so Amharic always renders correctly everywhere.
+   `Bela Bereka` and `Benaiah` live in `src/fonts/` and are bundled at build
+   time (Vite emits them as hashed assets). They take precedence over the
+   open-source Noto Serif/Sans Ethiopic faces below.
 --------------------------------------------------------------------------- */
 @font-face {
   font-family: "Bela Bereka";
   src:
-    url("/fonts/BelaBereka.woff2") format("woff2"),
-    url("/fonts/BelaBereka.ttf") format("truetype"),
+    url("fonts/Bela Bereka.ttf") format("truetype"),
     local("Bela Bereka");
   font-weight: 100 900;
   font-style: normal;
@@ -21,8 +19,7 @@
 @font-face {
   font-family: "Benaiah";
   src:
-    url("/fonts/Benaiah.woff2") format("woff2"),
-    url("/fonts/Benaiah.ttf") format("truetype"),
+    url("fonts/Benaiah.ttf") format("truetype"),
     local("Benaiah");
   font-weight: 100 900;
   font-style: normal;
@@ -128,15 +125,15 @@ body {
 /* Editorial letter-spaced label (EN) — reworked, not shrunken, for Amharic */
 .label {
   font-family: var(--font-body);
-  font-size: 0.6875rem;
+  font-size: clamp(0.75rem, 2vw, 0.9rem);
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.42em;
+  letter-spacing: 0.32em;
   line-height: 1.7;
 }
 
 html[lang="am"] .label {
-  font-size: 1.125rem;
+  font-size: clamp(0.85rem, 2.2vw, 1.1rem);
   text-transform: none;
   letter-spacing: 0.03em;
   line-height: 2;
@@ -145,67 +142,67 @@ html[lang="am"] .label {
 /* High-contrast serif display sizes — dedicated Amharic scale */
 .display-hero {
   font-family: var(--font-display);
-  font-size: clamp(3.25rem, 11vw, 8rem);
-  line-height: 0.95;
-  letter-spacing: 0.04em;
+  font-size: clamp(2.6rem, 9vw, 8rem);
+  line-height: 1.05;
+  letter-spacing: 0.02em;
 }
 
 html[lang="am"] .display-hero {
-  font-size: clamp(4.75rem, 15vw, 9.2rem);
-  line-height: 1.35;
+  font-size: clamp(3.8rem, 13vw, 9.2rem);
+  line-height: 1.3;
   letter-spacing: 0.01em;
   font-weight: 500;
 }
 
 .display-1 {
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  line-height: 1.05;
-  letter-spacing: 0.02em;
+  font-size: clamp(2rem, 6.5vw, 4.5rem);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
 }
 
 html[lang="am"] .display-1 {
-  font-size: clamp(2.5rem, 6.5vw, 4.6rem);
-  line-height: 1.5;
+  font-size: clamp(2.4rem, 8vw, 4.6rem);
+  line-height: 1.35;
   letter-spacing: 0.01em;
 }
 
 .display-2 {
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 3.6vw, 2.75rem);
-  line-height: 1.15;
-  letter-spacing: 0.02em;
+  font-size: clamp(1.5rem, 4.5vw, 2.75rem);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
 }
 
 html[lang="am"] .display-2 {
-  font-size: clamp(1.9rem, 4.2vw, 2.9rem);
-  line-height: 1.55;
+  font-size: clamp(1.8rem, 5.5vw, 2.9rem);
+  line-height: 1.35;
   letter-spacing: 0.01em;
 }
 
 .display-3 {
   font-family: var(--font-display);
-  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
-  line-height: 1.25;
-  letter-spacing: 0.05em;
-}
-
-html[lang="am"] .display-3 {
-  font-size: clamp(1.65rem, 3.4vw, 2.3rem);
-  line-height: 1.7;
+  font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+  line-height: 1.3;
   letter-spacing: 0.02em;
 }
 
-/* Body copy — Amharic gets a looser rhythm and slightly larger size */
+html[lang="am"] .display-3 {
+  font-size: clamp(1.5rem, 4vw, 2.3rem);
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+}
+
+/* Body copy — responsive with clamp() for mobile-first scaling */
 .body-copy {
   font-family: var(--font-body);
-  font-size: 0.9375rem;
-  line-height: 1.85;
+  font-size: clamp(1rem, 2.8vw, 1.2rem);
+  line-height: 1.75;
 }
 
 html[lang="am"] .body-copy {
-  font-size: 1.375rem;
-  line-height: 2.05;
+  font-size: clamp(1.05rem, 3vw, 1.35rem);
+  line-height: 1.85;
 }
 
 /* Hero script names — a flowing Latin calligraphic face; Amharic falls back
@@ -532,5 +529,59 @@ html[lang="am"] .detail-sub {
   .flip-flap.lower .flip-shade {
     animation-duration: 0.36s !important;
     animation-delay: 0.32s !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Mobile-specific optimizations for very small screens (320px - 375px)
+--------------------------------------------------------------------------- */
+@media (max-width: 375px) {
+  /* Prevent any horizontal overflow */
+  html, body {
+    overflow-x: clip;
+    max-width: 100vw;
+  }
+
+  /* Ensure hero names don't overflow */
+  .script-hero {
+    font-size: calc(var(--hero-name-size) * 0.85);
+    line-height: 1.2;
+  }
+
+  /* Slightly smaller display sizes on tiny screens */
+  .display-hero {
+    font-size: clamp(2.2rem, 8vw, 6.4rem);
+  }
+
+  /* Ensure Amharic doesn't overflow */
+  html[lang="am"] .display-hero {
+    font-size: clamp(3.2rem, 11vw, 9.2rem);
+  }
+
+  /* Comfortable touch targets */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Form inputs easier to tap */
+  input, textarea, select {
+    font-size: 16px !important; /* Prevents iOS zoom on focus */
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Landscape orientation adjustments
+--------------------------------------------------------------------------- */
+@media (max-height: 500px) and (orientation: landscape) {
+  /* Reduce hero height in landscape */
+  .display-hero {
+    font-size: clamp(2rem, 6vh, 4rem);
+  }
+
+  /* Adjust spacing */
+  section {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
   }
 }

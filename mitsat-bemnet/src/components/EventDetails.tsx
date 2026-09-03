@@ -18,8 +18,8 @@ export default function EventDetails() {
   ]
 
   return (
-    <section id="details" className="px-5 py-12 sm:py-16">
-      <div className="relative mx-auto max-w-3xl border border-forest/20 px-6 py-10 text-center sm:px-12 sm:py-14">
+    <section id="details" className="px-5 py-10 sm:py-16">
+      <div className="relative mx-auto max-w-3xl border border-forest/20 px-5 py-8 text-center sm:px-12 sm:py-14">
         <div className="pointer-events-none absolute inset-2 border border-forest/10 sm:inset-3" aria-hidden="true" />
         {corners.map((pos) => (
           <span key={pos} className={`${corner} ${pos}`} aria-hidden="true" />

@@ -6,7 +6,7 @@ export default function Footer() {
   const { t, isAm } = useLang()
 
   return (
-    <footer className="on-forest bg-forest-deep px-5 py-10 text-center text-cream sm:py-12">
+    <footer className="on-forest bg-forest-deep px-5 py-8 text-center text-cream sm:py-12">
       <Ornament tone="cream" className="mb-6" />
       <p className="label text-champagne/80">{t.footer.withLove}</p>
       <p className={`mt-4 text-champagne ${isAm ? 'font-am-display text-3xl leading-snug' : 'font-display text-2xl italic'}`}>

@@ -155,7 +155,7 @@ export default function WishesForm() {
                 rows={4}
                 maxLength={1000}
                 disabled={status === 'submitting'}
-                className="mt-3 w-full resize-none border border-forest/30 bg-cream-mist/50 px-4 py-3 font-body text-sm leading-relaxed text-forest placeholder:text-forest/40 transition-colors focus:border-forest focus:outline-none disabled:opacity-60"
+                className="mt-3 w-full resize-none border border-forest/30 bg-cream-mist/50 px-4 py-3.5 font-body text-base leading-relaxed text-forest placeholder:text-forest/40 transition-colors focus:border-forest focus:outline-none disabled:opacity-60"
               />
             </div>
 
@@ -177,7 +177,7 @@ export default function WishesForm() {
             <motion.button
               type="submit"
               disabled={status === 'submitting'}
-              className="on-forest flex w-full items-center justify-center gap-3 bg-forest px-6 py-4 text-cream transition-shadow hover:shadow-lift disabled:cursor-not-allowed disabled:opacity-70"
+              className="on-forest flex w-full items-center justify-center gap-3 bg-forest px-6 py-4 text-cream transition-shadow min-h-[52px] hover:shadow-lift disabled:cursor-not-allowed disabled:opacity-70"
               whileHover={reduceMotion || status === 'submitting' ? undefined : { y: -2 }}
               whileTap={reduceMotion || status === 'submitting' ? undefined : { scale: 0.99 }}
             >

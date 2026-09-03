@@ -117,10 +117,10 @@ export default function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative h-[118vh]"
+      className="relative sm:h-[118vh]"
       aria-label={isAm ? 'የጋብቻ መክፈቻ' : 'Wedding hero'}
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-forest-ink">
+      <div className="hidden sm:block sticky top-0 h-screen w-full overflow-hidden bg-forest-ink">
         {/* ─── PHOTOGRAPH ─────────────────────────────────────────── */}
         <div className="absolute inset-0">
           <motion.div
@@ -349,6 +349,89 @@ export default function Hero() {
             transition={reduced ? undefined : { duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
           />
         </motion.div>
+      </div>
+    {/* ─── MOBILE (< sm) — clean vertical editorial composition ─────────
+          Mobile is the primary experience: a content-driven stack on cream
+          paper — eyebrow, names, ornament, date/venue, then a fully contained
+          framed photograph with touch-friendly slide controls. No text ever
+          overlaps the image. (Desktop block above is hidden below sm.) */}
+      <div className="sm:hidden bg-cream text-forest">
+        <div className="px-5 pt-9 text-center">
+          <motion.p className="label text-forest/70" {...enter(0.2)}>
+            {t.hero.eyebrow}
+          </motion.p>
+          <motion.div className="mt-4 overflow-hidden" {...enter(0.4)}>
+            <h1 className="display-hero font-medium text-forest">{t.names.first}</h1>
+          </motion.div>
+          <motion.div className="overflow-hidden" {...enter(0.55)}>
+            <span className="my-1 block font-display text-2xl font-light italic text-forest/45">
+              {isAm ? 'እና' : '&'}
+            </span>
+          </motion.div>
+          <motion.div className="overflow-hidden" {...enter(0.7)}>
+            <h1 className="display-hero font-medium text-forest">{t.names.second}</h1>
+          </motion.div>
+
+          <motion.div className="mt-5" {...enter(0.85)}>
+            <Ornament />
+          </motion.div>
+
+          <motion.p className="mt-5 font-display text-xl italic text-forest/80" {...enter(0.95)}>
+            {t.hero.date}
+          </motion.p>
+          <motion.p
+            className={`mt-2 font-body text-forest/55 ${
+              isAm ? 'text-sm leading-[1.8]' : 'text-[11px] uppercase tracking-[0.28em]'
+            }`}
+            {...enter(1.05)}
+          >
+            {t.hero.dateEth} — {t.hero.location}
+          </motion.p>
+        </div>
+                {/* ─── MOBILE PHOTO — framed, swipeable, 4:3 ─────────────────── */}
+        <div className="px-5 mt-6 pb-10">
+          <motion.div
+            className="relative w-full overflow-hidden border border-forest/20"
+            style={{ aspectRatio: '4 / 3' }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={(_e, { offset, velocity }) => {
+              const swipe = offset.x * velocity.x
+              if (swipe < -5000) nextSlide()
+              else if (swipe > 5000) prevSlide()
+            }}
+          >
+            <div
+              className="absolute inset-0"
+              style={{ opacity: aVisible ? 1 : 0, transition: `opacity ${TRANSITION_MS}ms ease-out` }}
+            >
+              <img src={layerA.image} alt={layerA.alt} className="h-full w-full object-cover" style={{ objectPosition: `center ${layerA.focal}` }} draggable={false} loading="eager" decoding="async" />
+            </div>
+            <div
+              className="absolute inset-0"
+              style={{ opacity: bVisible ? 1 : 0, transition: `opacity ${TRANSITION_MS}ms ease-out` }}
+            >
+              <img src={layerB.image} alt={layerB.alt} className="h-full w-full object-cover" style={{ objectPosition: `center ${layerB.focal}` }} draggable={false} loading="lazy" decoding="async" />
+            </div>
+            <div className="pointer-events-none absolute inset-2 border border-forest/35" aria-hidden="true" />
+            <div className="pointer-events-none absolute inset-3.5 border border-forest/15" aria-hidden="true" />
+            <div className="pointer-events-none absolute left-2 top-2 h-2 w-2 border-l border-t border-forest/60" aria-hidden="true" />
+            <div className="pointer-events-none absolute right-2 top-2 h-2 w-2 border-r border-t border-forest/60" aria-hidden="true" />
+            <div className="pointer-events-none absolute bottom-2 left-2 h-2 w-2 border-b border-l border-forest/60" aria-hidden="true" />
+            <div className="pointer-events-none absolute bottom-2 right-2 h-2 w-2 border-b border-r border-forest/60" aria-hidden="true" />
+            <div className="absolute bottom-3 right-3 bg-cream/90 px-2 py-1 font-body text-[10px] tabular-nums text-forest/70">
+              {String(active + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+            </div>
+          </motion.div>
+          <div className="mt-3 flex justify-center gap-2">
+            {slides.map((sl, i) => (
+              <button key={i} onClick={() => crossfadeTo(i)} className={`relative h-12 w-16 overflow-hidden border transition-all duration-300 ${active === i ? 'border-forest/60 shadow-md' : 'border-forest/15'}`} aria-label={`Photo ${i + 1}`}>
+                <img src={sl.image} alt="" className="h-full w-full object-cover" style={{ objectPosition: `center ${sl.focal}` }} draggable={false} loading="lazy" decoding="async" />
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   )

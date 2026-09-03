@@ -34,7 +34,7 @@ export default function Gallery() {
   const reduced = useReducedMotion()
 
   return (
-    <section id="gallery" className="px-5 py-12 sm:py-16">
+    <section id="gallery" className="px-5 py-10 sm:py-16">
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <p className="label text-center text-forest/75">{t.gallery.eyebrow}</p>
